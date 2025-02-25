@@ -13,7 +13,7 @@ public class EmployeeMapper {
         return new EmployeeDTO(employee.getName(), employee.getSalary());
     }
 
-    // Convert DTO->Entity
+    // Convert DTO → Entity
     public static Employee toEntity(EmployeeDTO dto) {
         return new Employee(null, dto.getName(), dto.getSalary());
     }
