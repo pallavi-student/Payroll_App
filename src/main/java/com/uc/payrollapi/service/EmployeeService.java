@@ -1,12 +1,14 @@
 package com.uc.payrollapi.service;
 
+
+import com.uc.payrollapi.dto.EmployeeDTO;
 import com.uc.payrollapi.model.Employee;
 import com.uc.payrollapi.repository.EmployeeRepository;
+import com.uc.payrollapi.util.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -14,35 +16,36 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository repository;
 
-    // Fetch all employees
-    public List<Employee> getAllEmployees() {
-        return repository.findAll();
+    // Get All Employees (returns DTO List)
+    public List<EmployeeDTO> getAllEmployees() {
+        return repository.findAll().stream()
+                .map(EmployeeMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    // Fetch employee by ID
-    public Optional<Employee> getEmployeeById(Long id) {
-        return repository.findById(id);
+    // Get Employee by ID
+    public EmployeeDTO getEmployeeById(Long id) {
+        return repository.findById(id)
+                .map(EmployeeMapper::toDTO)
+                .orElseThrow(() -> new RuntimeException("Employee Not Found"));
     }
 
-    // Add a new employee
-    public Employee addEmployee(Employee employee) {
-        return repository.save(employee);
+    // Add Employee
+    public EmployeeDTO addEmployee(EmployeeDTO dto) {
+        Employee employee = EmployeeMapper.toEntity(dto);
+        return EmployeeMapper.toDTO(repository.save(employee));
     }
 
-    // Update employee details
-    public Employee updateEmployee(Long id, Employee employeeDetails) {
-        Optional<Employee> optionalEmployee = repository.findById(id);
-        if (optionalEmployee.isPresent()) {
-            Employee existingEmployee = optionalEmployee.get();
-            existingEmployee.setName(employeeDetails.getName());
-            existingEmployee.setEmail(employeeDetails.getEmail());
-            existingEmployee.setSalary(employeeDetails.getSalary());
-            return repository.save(existingEmployee);
-        }
-        return null;
+    // Update Employee
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO dto) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee Not Found"));
+        employee.setName(dto.getName());
+        employee.setSalary(dto.getSalary());
+        return EmployeeMapper.toDTO(repository.save(employee));
     }
 
-    // Delete an employee by ID
+    // Delete Employee
     public void deleteEmployee(Long id) {
         repository.deleteById(id);
     }

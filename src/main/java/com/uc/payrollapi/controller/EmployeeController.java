@@ -1,14 +1,14 @@
 package com.uc.payrollapi.controller;
 
-import com.uc.payrollapi.model.Employee;
+
+
+import com.uc.payrollapi.dto.EmployeeDTO;
 import com.uc.payrollapi.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000") // Allow frontend requests
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -16,40 +16,34 @@ public class EmployeeController {
     @Autowired
     private EmployeeService service;
 
-    // Get all employees
+    // Get all employees (DTO)
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDTO> getAllEmployees() {
         return service.getAllEmployees();
     }
 
-    // Get employee by ID
+    // Get employee by ID (DTO)
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long id) {
-        Optional<Employee> employee = service.getEmployeeById(id);
-        return employee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    public EmployeeDTO getEmployeeById(@PathVariable Long id) {
+        return service.getEmployeeById(id);
     }
 
-    // Create new employee
+    // Create employee (DTO)
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        Employee savedEmployee = service.addEmployee(employee);
-        return ResponseEntity.ok(savedEmployee);
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        return service.addEmployee(employeeDTO);
     }
 
-    // Update employee
+    // Update employee (DTO)
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employeeDetails) {
-        Employee updatedEmployee = service.updateEmployee(id, employeeDetails);
-        if (updatedEmployee != null) {
-            return ResponseEntity.ok(updatedEmployee);
-        }
-        return ResponseEntity.notFound().build();
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        return service.updateEmployee(id, employeeDTO);
     }
 
     // Delete employee
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+    public String deleteEmployee(@PathVariable Long id) {
         service.deleteEmployee(id);
-        return ResponseEntity.noContent().build();
+        return "Employee with ID " + id + " deleted!";
     }
 }
