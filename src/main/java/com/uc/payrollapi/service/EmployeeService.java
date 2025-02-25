@@ -14,18 +14,22 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository repository;
 
+    // Fetch all employees
     public List<Employee> getAllEmployees() {
         return repository.findAll();
     }
 
+    // Fetch employee by ID
     public Optional<Employee> getEmployeeById(Long id) {
         return repository.findById(id);
     }
 
+    // Add a new employee
     public Employee addEmployee(Employee employee) {
         return repository.save(employee);
     }
 
+    // Update employee details
     public Employee updateEmployee(Long id, Employee employeeDetails) {
         Optional<Employee> optionalEmployee = repository.findById(id);
         if (optionalEmployee.isPresent()) {
@@ -38,8 +42,8 @@ public class EmployeeService {
         return null;
     }
 
+    // Delete an employee by ID
     public void deleteEmployee(Long id) {
         repository.deleteById(id);
     }
 }
-
