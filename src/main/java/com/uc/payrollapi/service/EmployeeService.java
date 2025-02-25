@@ -1,31 +1,65 @@
 package com.uc.payrollapi.service;
 
-import com.uc.payrollapi.model.Employee;
-import org.springframework.stereotype.Service;
-import jakarta.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
 
+
+
+
+import com.uc.payrollapi.dto.EmployeeDTO;
+import com.uc.payrollapi.model.Employee;
+import com.uc.payrollapi.repository.EmployeeRepository;
+import com.uc.payrollapi.util.EmployeeMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Slf4j
 @Service
 public class EmployeeService {
-    private final List<Employee> employees = new ArrayList<>();
 
-    //  Add dummy data when the application starts
-    @PostConstruct
-    public void init() {
-        employees.add(new Employee(1L, "John Doe", 50000));
-        employees.add(new Employee(2L, "Jane Smith", 60000));
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
+    public List<EmployeeDTO> getAllEmployees() {
+        log.info("Fetching all employees from database");
+        return employeeRepository.findAll()
+                .stream()
+                .map(employeeMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    //  Get all employees
-    public List<Employee> getAllEmployees() {
-        return employees;
+    public EmployeeDTO getEmployeeById(Long id) {
+        log.info("Fetching employee with ID: {}", id);
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        return employeeMapper.toDTO(employee);
     }
 
-    //  Add a new employee
-    public Employee addEmployee(Employee employee) {
-        employee.setId((long) (employees.size() + 1)); // Assign ID manually
-        employees.add(employee);
-        return employee;
+    public EmployeeDTO createEmployee(EmployeeDTO employeeDTO) {
+        log.info("Creating new employee: {}", employeeDTO);
+        Employee employee = employeeMapper.toEntity(employeeDTO);
+        return employeeMapper.toDTO(employeeRepository.save(employee));
+    }
+
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
+        log.info("Updating employee with ID: {}", id);
+        Employee existingEmployee = employeeRepository.findById(id).orElse(null);
+        if (existingEmployee != null) {
+            existingEmployee.setName(employeeDTO.getName());
+            existingEmployee.setEmail(employeeDTO.getEmail());
+            existingEmployee.setSalary(employeeDTO.getSalary());
+            return employeeMapper.toDTO(employeeRepository.save(existingEmployee));
+        }
+        log.warn("Employee with ID {} not found!", id);
+        return null;
+    }
+
+    public void deleteEmployee(Long id) {
+        log.info("Deleting employee with ID: {}", id);
+        employeeRepository.deleteById(id);
     }
 }
