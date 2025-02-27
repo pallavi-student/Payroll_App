@@ -1,7 +1,4 @@
 package com.uc.payrollapi.controller;
-
-
-
 import com.uc.payrollapi.dto.EmployeeDTO;
 import com.uc.payrollapi.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +26,8 @@ public class EmployeeController {
         log.info("Received request to fetch employee with ID: {}", id);
         return employeeService.getEmployeeById(id);
     }
+
+
 
     @PostMapping
     public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {

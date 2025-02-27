@@ -1,9 +1,4 @@
 package com.uc.payrollapi.service;
-
-
-
-
-
 import com.uc.payrollapi.dto.EmployeeDTO;
 import com.uc.payrollapi.model.Employee;
 import com.uc.payrollapi.repository.EmployeeRepository;
@@ -15,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
+@Slf4j  // Lombok Slf4j annotation for logging
 @Service
 public class EmployeeService {
 
@@ -36,6 +31,9 @@ public class EmployeeService {
     public EmployeeDTO getEmployeeById(Long id) {
         log.info("Fetching employee with ID: {}", id);
         Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            log.warn("Employee with ID {} not found!", id);
+        }
         return employeeMapper.toDTO(employee);
     }
 
