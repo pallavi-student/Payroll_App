@@ -3,33 +3,49 @@ package com.uc.payrollapi.controller;
 
 import com.uc.payrollapi.dto.EmployeeDTO;
 import com.uc.payrollapi.service.EmployeeService;
-import jakarta.validation.Valid;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@Slf4j
 @RestController
-@RequestMapping("/employees")
-@Validated
+@RequestMapping("/api/employees")
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    @Autowired
+    private EmployeeService employeeService;
 
-    public EmployeeController(EmployeeService employeeService) {
-        this.employeeService = employeeService;
+    @GetMapping
+    public List<EmployeeDTO> getAllEmployees() {
+        log.info("Received request to fetch all employees");
+        return employeeService.getAllEmployees();
     }
 
-    // Create Employee
+    @GetMapping("/{id}")
+    public EmployeeDTO getEmployeeById(@PathVariable Long id) {
+        log.info("Received request to fetch employee with ID: {}", id);
+        return employeeService.getEmployeeById(id);
+    }
+
+
+
     @PostMapping
-    public ResponseEntity<String> createEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
-        employeeService.createEmployee(employeeDTO);
-        return ResponseEntity.ok("Employee created successfully");
+    public EmployeeDTO createEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("Received request to create a new employee: {}", employeeDTO);
+        return employeeService.createEmployee(employeeDTO);
     }
 
-    // Update Employee
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeDTO employeeDTO) {
-        employeeService.updateEmployee(id, employeeDTO);
-        return ResponseEntity.ok("Employee updated successfully");
+    public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO employeeDTO) {
+        log.info("Received request to update employee with ID: {}", id);
+        return employeeService.updateEmployee(id, employeeDTO);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteEmployee(@PathVariable Long id) {
+        log.info("Received request to delete employee with ID: {}", id);
+        employeeService.deleteEmployee(id);
     }
 }
