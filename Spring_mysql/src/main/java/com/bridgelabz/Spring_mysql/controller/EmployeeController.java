@@ -83,4 +83,34 @@ public class EmployeeController {
                 })
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
+
+    //List
+
+    @GetMapping
+    public List<Employee> getAllEmployeesList() {
+        return service.getAllEmployeesList();
+    }
+
+
+    @GetMapping("/{id}")
+    public Employee getEmployeeByIdList(@PathVariable int id) {
+        return service.getEmployeeByIdList(id);
+    }
+
+    @PostMapping
+    public Employee addEmployeeList(@RequestBody Employee employee) {
+        return service.addEmployeeList(employee);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployeeList(@PathVariable int id, @RequestBody Employee employee) {
+        return service.updateEmployeeList(id, employee);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteEmployeeList(@PathVariable int id) {
+        return service.deleteEmployeeList(id) ? "Deleted Successfully" : "Employee Not Found";
+    }
+
+
 }
