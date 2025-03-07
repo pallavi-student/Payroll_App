@@ -4,6 +4,7 @@ import com.bridgelabz.Spring_mysql.DTO.EmployeePayrollDTO;
 import com.bridgelabz.Spring_mysql.model.Employee;
 import com.bridgelabz.Spring_mysql.repository.EmployeeRepository;
 import com.bridgelabz.Spring_mysql.service.EmployeeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employees")
+@Slf4j
 public class EmployeeController {
     private final EmployeeService service;
 
@@ -75,7 +77,7 @@ public class EmployeeController {
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-
+    /*** ---- UPDATE EMPLOYEE USING DTO ---- ***/
     @PutMapping("/dto/update/{id}")
     public EmployeePayrollDTO updateEmployeeDTO(@PathVariable Long id, @RequestBody EmployeePayrollDTO updatedDTO) {
         return employeeRepository.findById(id)
@@ -113,4 +115,5 @@ public class EmployeeController {
     public String deleteEmployeeList(@PathVariable int id) {
         return service.deleteEmployeeList(id) ? "Deleted Successfully" : "Employee Not Found";
     }
+
 }

@@ -2,12 +2,12 @@ package com.bridgelabz.Spring_mysql.model;
 
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @Table(name = "employees")
 public class Employee {
