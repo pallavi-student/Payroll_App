@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "employees")
+@Table(name = "employees2")
 public class Employee {
 
     @Id
@@ -20,13 +20,13 @@ public class Employee {
     private String name;
     private String department;
     private double salary;
-
-    // Constructors
-    public Employee() {}
-
     public Employee(String name, String department, double salary) {
         this.name = name;
         this.department = department;
+        this.salary = salary;
+    }
+    public Employee(String name, double salary){
+        this.name = name ;
         this.salary = salary;
     }
 
