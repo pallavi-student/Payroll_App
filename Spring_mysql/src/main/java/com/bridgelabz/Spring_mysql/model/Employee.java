@@ -2,15 +2,14 @@ package com.bridgelabz.Spring_mysql.model;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Table(name = "employees2")
+@Table(name = "employees")
 public class Employee {
 
     @Id
@@ -20,6 +19,10 @@ public class Employee {
     private String name;
     private String department;
     private double salary;
+
+    // Constructors
+    public Employee() {}
+
     public Employee(String name, String department, double salary) {
         this.name = name;
         this.department = department;

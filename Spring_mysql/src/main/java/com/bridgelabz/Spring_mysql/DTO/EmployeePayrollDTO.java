@@ -1,4 +1,12 @@
 package com.bridgelabz.Spring_mysql.DTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+/*
+@Data
+@AllArgsConstructor
+@NoArgsConstructor*/
 public class EmployeePayrollDTO {
     private String name;
     private Double salary;

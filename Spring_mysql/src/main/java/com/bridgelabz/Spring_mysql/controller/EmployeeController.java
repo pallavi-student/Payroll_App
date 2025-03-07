@@ -16,64 +16,68 @@ import java.util.stream.Collectors;
 public class EmployeeController {
     private final EmployeeService service;
 
-    public EmployeeController(EmployeeService service) {
-        this.service = service;
-    }
     @Autowired
     private EmployeeRepository employeeRepository;
 
+    public EmployeeController(EmployeeService service) {
+        this.service = service;
+    }
 
-    @GetMapping
+
+    @GetMapping("/all")
     public List<Employee> getAllEmployees() {
         return service.getAllEmployees();
     }
 
-    @GetMapping("/{id}")
+
+    @GetMapping("/by-id/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
         return service.getEmployeeById(id);
     }
 
-    @PostMapping
+
+    @PostMapping("/add")
     public Employee addEmployee(@RequestBody Employee employee) {
         return service.addEmployee(employee);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
         return service.updateEmployee(id, employee);
     }
 
-    @DeleteMapping("/{id}")
+
+    @DeleteMapping("/delete/{id}")
     public void deleteEmployee(@PathVariable Long id) {
         service.deleteEmployee(id);
     }
-    @PostMapping
+
+    @PostMapping("/dto/add")
     public EmployeePayrollDTO createEmployee(@RequestBody EmployeePayrollDTO employeeDTO) {
         Employee employee = new Employee(employeeDTO.getName(), employeeDTO.getSalary());
         employeeRepository.save(employee);
-        return employeeDTO;  // Returning DTO for API response
+        return employeeDTO;
     }
 
-    // Get All Employees as DTOs (GET)
-    @GetMapping
-    public List<EmployeePayrollDTO> getAllEmployeesdto() {
+    @GetMapping("/dto/all")
+    public List<EmployeePayrollDTO> getAllEmployeesDTO() {
         return employeeRepository.findAll()
                 .stream()
                 .map(emp -> new EmployeePayrollDTO(emp.getName(), emp.getSalary()))
                 .collect(Collectors.toList());
     }
 
-    // Get Employee by ID as DTO (GET)
-    @GetMapping("/{id}")
-    public EmployeePayrollDTO getEmployeeByIddto(@PathVariable Long id) {
+    /*** ---- GET EMPLOYEE BY ID AS DTO ---- ***/
+    @GetMapping("/dto/by-id/{id}")
+    public EmployeePayrollDTO getEmployeeByIdDTO(@PathVariable Long id) {
         Optional<Employee> employee = employeeRepository.findById(id);
         return employee.map(emp -> new EmployeePayrollDTO(emp.getName(), emp.getSalary()))
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    // Update Employee using DTO (PUT)
-    @PutMapping("/{id}")
-    public EmployeePayrollDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeePayrollDTO updatedDTO) {
+
+    @PutMapping("/dto/update/{id}")
+    public EmployeePayrollDTO updateEmployeeDTO(@PathVariable Long id, @RequestBody EmployeePayrollDTO updatedDTO) {
         return employeeRepository.findById(id)
                 .map(employee -> {
                     employee.setName(updatedDTO.getName());
@@ -84,30 +88,28 @@ public class EmployeeController {
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
     }
 
-    //List
-
-    @GetMapping
+    @GetMapping("/list/all")
     public List<Employee> getAllEmployeesList() {
         return service.getAllEmployeesList();
     }
 
-
-    @GetMapping("/{id}")
+    @GetMapping("/list/by-id/{id}")
     public Employee getEmployeeByIdList(@PathVariable int id) {
         return service.getEmployeeByIdList(id);
     }
 
-    @PostMapping
+    /*** ---- ADD EMPLOYEE TO LIST ---- ***/
+    @PostMapping("/list/add")
     public Employee addEmployeeList(@RequestBody Employee employee) {
         return service.addEmployeeList(employee);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/list/update/{id}")
     public Employee updateEmployeeList(@PathVariable int id, @RequestBody Employee employee) {
         return service.updateEmployeeList(id, employee);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/list/delete/{id}")
     public String deleteEmployeeList(@PathVariable int id) {
         return service.deleteEmployeeList(id) ? "Deleted Successfully" : "Employee Not Found";
     }
